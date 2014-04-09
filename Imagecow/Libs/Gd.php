@@ -343,10 +343,11 @@ class Gd extends Image implements InterfaceLibs
      * @param int/string $width   The max width of the image. It can be a number (pixels) or percentaje
      * @param int/string $height  The max height of the image. It can be a number (pixels) or percentaje
      * @param boolean    $enlarge True if the new image can be bigger (false by default)
+     * @param boolean    $stretch True if the new image can be stretched (false by default)
      *
      * @return $this
      */
-    public function resize($width, $height = 0, $enlarge = false)
+    public function resize($width, $height = 0, $enlarge = false, $stretch = false)
     {
         if (!$this->image) {
             return $this;
@@ -355,25 +356,30 @@ class Gd extends Image implements InterfaceLibs
         $imageWidth = $this->getWidth();
         $imageHeight = $this->getHeight();
 
-        $width = $this->getSize($width, $imageWidth);
-        $height = $this->getSize($height, $imageHeight);
+        if (!$stretch)
+        {
 
-        if (!$enlarge && $this->enlarge($width, $imageWidth) && $this->enlarge($height, $imageHeight)) {
-            return $this;
-        }
+            $width = $this->getSize($width, $imageWidth);
+            $height = $this->getSize($height, $imageHeight);
 
-        if (!$width && !$height) {
-            return $this;
-        }
+            if (!$enlarge && $this->enlarge($width, $imageWidth) && $this->enlarge($height, $imageHeight)) {
+                return $this;
+            }
 
-        if ($width != 0 && ($height === 0 || ($imageWidth/$width) > ($imageHeight/$height))) {
-            $height = ceil(($width/$imageWidth) * $imageHeight);
-        } else {
-            $width = ceil(($height/$imageHeight) * $imageWidth);
-        }
+            if (!$width && !$height) {
+                return $this;
+            }
 
-        if ($imageWidth === $width && $imageHeight === $height) {
-            return $this;
+            if ($width != 0 && ($height === 0 || ($imageWidth/$width) > ($imageHeight/$height))) {
+                $height = ceil(($width/$imageWidth) * $imageHeight);
+            } else {
+                $width = ceil(($height/$imageHeight) * $imageWidth);
+            }
+
+            if ($imageWidth === $width && $imageHeight === $height) {
+                return $this;
+            }
+
         }
 
         $tmp_image = imagecreatetruecolor($width, $height);
