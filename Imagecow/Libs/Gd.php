@@ -343,11 +343,11 @@ class Gd extends Image implements InterfaceLibs
      * @param int/string $width   The max width of the image. It can be a number (pixels) or percentaje
      * @param int/string $height  The max height of the image. It can be a number (pixels) or percentaje
      * @param boolean    $enlarge True if the new image can be bigger (false by default)
-     * @param boolean    $stretch True if the new image can be stretched (false by default)
+     * @param boolean    $pad True if the new image can be padded (false by default)
      *
      * @return $this
      */
-    public function resize($width, $height = 0, $enlarge = false, $stretch = false)
+    public function resize($width, $height = 0, $enlarge = false, $pad = false)
     {
         if (!$this->image) {
             return $this;
@@ -356,8 +356,32 @@ class Gd extends Image implements InterfaceLibs
         $imageWidth = $this->getWidth();
         $imageHeight = $this->getHeight();
 
-        if (!$stretch)
+        if ($pad)
         {
+            // Pad image with whitespace if it doesn't fit perfect
+
+
+            // determine scale based on the longest edge
+            if ($imageWidth > $imageHeight) {
+                $scale = $imageHeight/$imageWidth;
+                $new_w = $width;
+                $new_h = $height * $scale;
+                $offest_x = 0;
+                $offest_y = ($height - $new_h) / 2;
+            } else {
+                $scale = $imageWidth/$imageHeight;
+                $new_h = $height;
+                $new_w = $width * $scale;
+                $offest_x = ($width - $new_w) / 2;
+                $offest_y = 0;
+            }
+
+
+        }
+        else
+        {
+
+            $offest_x = $offest_y = 0;
 
             $width = $this->getSize($width, $imageWidth);
             $height = $this->getSize($height, $imageHeight);
@@ -370,7 +394,7 @@ class Gd extends Image implements InterfaceLibs
                 return $this;
             }
 
-            if ($width != 0 && ($height === 0 || ($imageWidth/$width) > ($imageHeight/$height))) {
+            if ($pad || $width != 0 && ($height === 0 || ($imageWidth/$width) > ($imageHeight/$height))) {
                 $height = ceil(($width/$imageWidth) * $imageHeight);
             } else {
                 $width = ceil(($height/$imageHeight) * $imageWidth);
@@ -380,14 +404,18 @@ class Gd extends Image implements InterfaceLibs
                 return $this;
             }
 
+            $new_w =  $width;
+            $new_h =  $height;
         }
+
+
 
         $tmp_image = imagecreatetruecolor($width, $height);
 
         if ($tmp_image === false ||
             imagesavealpha($tmp_image, true) === false ||
             imagefill($tmp_image, 0, 0, imagecolorallocatealpha($tmp_image, 0, 0, 0, 127)) === false ||
-            imagecopyresampled($tmp_image, $this->image, 0, 0, 0, 0, $width, $height, $imageWidth, $imageHeight) === false)
+            imagecopyresampled($tmp_image, $this->image, $offest_x, $offest_y, 0, 0, $new_w, $new_h, $imageWidth, $imageHeight) === false)
         {
             $this->setError('There was an error resizing the image', IMAGECOW_ERROR_FUNCTION);
 

@@ -88,11 +88,11 @@ interface InterfaceLibs
      * @param int/string $width   The max width of the image. It can be a number (pixels) or percentaje
      * @param int/string $height  The max height of the image. It can be a number (pixels) or percentaje
      * @param boolean    $enlarge True if the new image can be bigger (false by default)
-     * @param boolean    $stretch True if the new image can be stretched (false by default)
+     * @param boolean    $pad True if the new image can be padded (false by default)
      *
      * @return $this
      */
-    public function resize ($width, $height = 0, $enlarge = false, $stretch = false);
+    public function resize ($width, $height = 0, $enlarge = false, $pad = false);
 
 
     /**
