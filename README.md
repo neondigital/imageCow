@@ -1,6 +1,11 @@
 Imagecow
 ========
 
+MODIFIED FOR Single Advertising Page Project
+--------------------------------------------
+
+
+
 Created by Oscar Otero <http://oscarotero.com> <oom@oscarotero.com>
 
 What is Imagecow?
