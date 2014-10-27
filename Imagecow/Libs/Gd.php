@@ -360,22 +360,20 @@ class Gd extends Image implements InterfaceLibs
         {
             // Pad image with whitespace if it doesn't fit perfect
 
-
             // determine scale based on the longest edge
             if ($imageWidth > $imageHeight) {
                 $scale = $imageHeight/$imageWidth;
                 $new_w = $width;
-                $new_h = $height * $scale;
+                $new_h = $width * $scale;
                 $offest_x = 0;
                 $offest_y = ($height - $new_h) / 2;
             } else {
                 $scale = $imageWidth/$imageHeight;
                 $new_h = $height;
-                $new_w = $width * $scale;
+                $new_w = $height * $scale;
                 $offest_x = ($width - $new_w) / 2;
                 $offest_y = 0;
             }
-
 
         }
         else
